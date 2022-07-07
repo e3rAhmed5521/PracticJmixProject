@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://sessionBrowse.caption"
+        focusComponent="sessionsTable">
+    <data readOnly="true">
+        <collection id="sessionsDc"
+                    class="com.company.sessionplaner.entity.Session">
+            <fetchPlan extends="_base">
+                <property name="speaker" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="sessionsDl">
+                <query>
+                    <![CDATA[select e from Session_ e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+        <editorScreen id="sessionEditDialog" entityClass="com.company.sessionplaner.entity.Session"
+                      container="sessionsDc" screenClass="com.company.sessionplaner.screen.session.SessionEdit"
+                      openMode="DIALOG" editMode="EDIT"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="auto"
+                width="auto" closeable="false"/>
+    <layout expand="sessionTabSheet" spacing="true">
+        <filter id="filter"
+                dataLoader="sessionsDl">
+            <properties include=".*"/>
+        </filter>
+        <tabSheet id="sessionTabSheet" height="100px">
+            <tab caption="msg://calendarTab.caption" id="calendarTab" spacing="true" expand="sessionsCalendar">
+                <calendar id="sessionsCalendar" dataContainer="sessionsDc" startDateProperty="startDate"
+                          endDateProperty="endDate" captionProperty="topic" descriptionProperty="description"
+                          firstVisibleHourOfDay="8" lastVisibleHourOfDay="20"/>
+            </tab>
+            <tab caption="msg://tableTab.caption" id="tableTab" spacing="true" expand="sessionsTable">
+                <groupTable id="sessionsTable"
+                                    width="100%"
+                                    dataContainer="sessionsDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="speaker"/>
+                        <column id="description"/>
+                        <column id="endDate"/>
+                        <column id="topic"/>
+                        <column id="startDate"/>
+                        <column id="duration"/>
+                    </columns>
+                    <simplePagination/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="sessionsTable.create"/>
+                        <button id="editBtn" action="sessionsTable.edit"/>
+                        <button id="removeBtn" action="sessionsTable.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+            </tab>
+        </tabSheet>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

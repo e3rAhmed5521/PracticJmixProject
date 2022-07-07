@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="SessionPlaner">
+        <createTable tableName="SESSION_">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SESSION_"/>
+            </column>
+            <column name="SPEAKER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="CLOB"/>
+            <column name="END_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOPIC" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="START_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DURATION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="SessionPlaner">
+        <createTable tableName="SPEAKER">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SPEAKER"/>
+            </column>
+            <column name="FIRST_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_NAME" type="VARCHAR(255)"/>
+            <column name="EMAIL" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="SessionPlaner">
+        <addUniqueConstraint columnNames="EMAIL" constraintName="UC_SPEAKER_EMAIL" tableName="SPEAKER"/>
+    </changeSet>
+    <changeSet id="4" author="SessionPlaner">
+        <createIndex indexName="IDX_SESSION_SPEAKER_ID" tableName="SESSION_">
+            <column name="SPEAKER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="SPEAKER_ID" baseTableName="SESSION_"
+                                 constraintName="FK_SESSION__ON_SPEAKER" referencedColumnNames="ID"
+                                 referencedTableName="SPEAKER"/>
+    </changeSet>
+</databaseChangeLog>
